@@ -76,8 +76,9 @@ def get_data():
     for i in range(len(tickers)):
         tickers[i] = string_to_list(tickers[i])
 
-    for i in range(len(tickers)):
-        tickers[i] = tickers[i][:3]
+    ## redundant code
+    # for i in range(len(tickers)):
+    #     tickers[i] = tickers[i][:3]
         
     df_names = []
 
