@@ -47,39 +47,32 @@ def read_file(filename):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     return pd.read_csv(dir_path + '\\' + "csv-files" + '\\' + filename)
 
-# Might be redundant
-def get_training_data(x, y, test_size):
+def get_training_and_testing_data(x, y, test_size):
     # 2. (train_features,train_stock_price)← training_function() 
-    return train_test_split(x, y, test_size=test_size)
-
-# Might be redundant
-def get_testing_data(df):
     # 3. (test_features,test_stock_price)←testing_function() 
-    pass
+        
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size)
+    return x_train, x_test, y_train, y_test
 
+# Not sure if im supposed to make my own model or use sklearn
 def get_model(df):
      # 4. Model←LASSO_train(train_features ,train_stock_price, lambda) 
 
     pass
 
-def get_stock_price_predict(df):
+def get_stock_price_predict(model):
     # 5. stock_price_predict← LASSO_predict(train_features) 
-
-    pass
-
+    return model.predict()
+    
 def get_mape(test_stock_price, stock_price_predict):
     # 6. MAPE ← mean [abs{(test_stock_price – stock_price_predict)/test_stock_price}] * 100 
-    # test_stock_price = df['Close']
-    # stock_price_predict = get_stock_price_predict(df)
-    
+
     # not entirely sure if this is correct
     # mape = mean([abs((test_stock_price[i] - stock_price_predict[i])/test_stock_price[i]) for i in range(len(test_stock_price))]) * 100
     return mean(abs((test_stock_price - stock_price_predict)/test_stock_price) ) * 100 
 
 def get_rmse(test_stock_price, stock_price_predict):
     # 7. RMSE ← sqrt [mean{(test_stock_price – stock_price_predict)2}] 
-    # test_stock_price = df['Close']
-    # stock_price_predict = get_stock_price_predict(df)
 
     return np.sqrt(mean((test_stock_price - stock_price_predict)**2))
  
@@ -95,8 +88,8 @@ def lasso_model(ticker):
     df = read_file(ticker + '.csv')
     print(df)
     # not sure if y should be df['Close'] or df['Volume']
-    # x_train, x_test, y_train, y_test = get_training_data(df, df['Close'], 0.3) #redundant?
-    x_train, x_test, y_train, y_test = train_test_split(df, df['Close'], 0.3)
+    x_train, x_test, y_train, y_test = get_training_and_testing_data(df, df['Close'], 0.3) #redundant?
+    # x_train, x_test, y_train, y_test = train_test_split(df, df['Close'], 0.3)
     
     #train model
     # TODO -think have to implement this my self, temporarily using skleran lasso model.
@@ -121,6 +114,26 @@ def ridge_model(ticker):
     # not sure if y should be df['Close'] or df['Volume']
     # x_train, x_test, y_train, y_test = get_training_data(df, df['Close'], 0.2) #redundant?
     x_train, x_test, y_train, y_test = train_test_split(df, df['Close'], 0.2)
+    
+    pass
+
+#really confused...
+def trying_to_understand_formulas():
+    # Consider the set of training vectors (x, ), x belongs to Rn, belongs to R,
+    #1 i = 1...N
+    
+    # The hypothesis or the linear regression output is given by the following:
+    #2 h (x) = d sigma notation (j = 0) wj xj = w^T x
+                                                #transpose of w
+                                                
+    # The cost function or the squared error function is defined as follows:
+    #3 E (w) = 1/N * (N sigma notation (i = 0)) * (h(xi) - yi)2 = 1/N  ||Xw - y||^2 
+    ## w = weight vector
+    ## d = dimension of the feature vector (number of features)
+    
+    
+    #9 E (w) = 1/N * (N sigma notation (i = 0)) * (h(xi) - yi)2 + lambda * (d sigma notation (j = 0)) ||w||^2 = 1/N ||Xw - y||^2 + lambda ||w||^2
+    
     
     pass
 
