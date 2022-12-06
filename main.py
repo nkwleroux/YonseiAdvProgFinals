@@ -121,10 +121,24 @@ def ridge_model(ticker):
 def trying_to_understand_formulas():
     # Consider the set of training vectors (x, ), x belongs to Rn, belongs to R,
     #1 i = 1...N
+    ### number of features?
     
     # The hypothesis or the linear regression output is given by the following:
-    #2 h (x) = d sigma notation (j = 0) wj xj = w^T x
+    #2 h (x) = d sigma notation (j = 0) wj xj = w^T * x
                                                 #transpose of w
+    n = 0 #TODO
+    w = [] #TODO - weight vector
+    x_train = [] #TODO
+    y_train = [] #TODO
+
+    #if x^0 = 1
+    x_train[0] = 1 # I think?   
+
+    #eq2 = h(x)
+    eq2 = (w[j] * x_train[j] for j in range(len(x_train))) # = w^T * x	
+    
+    #eq3 = j(w)
+    eq3 = (1/n) * (eq2[i] - y_train[i] for i in range(len(eq2)))**2 #this is very wrong
                                                 
     # The cost function or the squared error function is defined as follows:
     #3 E (w) = 1/N * (N sigma notation (i = 0)) * (h(xi) - yi)2 = 1/N  ||Xw - y||^2 
