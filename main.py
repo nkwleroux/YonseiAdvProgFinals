@@ -64,17 +64,27 @@ def get_stock_price_predict(model):
     # 5. stock_price_predict← LASSO_predict(train_features) 
     return model.predict()
     
-def get_mape(test_stock_price, stock_price_predict):
+def get_mape(stock_actual_price, stock_price_predict):
     # 6. MAPE ← mean [abs{(test_stock_price – stock_price_predict)/test_stock_price}] * 100 
 
     # not entirely sure if this is correct
     # mape = mean([abs((test_stock_price[i] - stock_price_predict[i])/test_stock_price[i]) for i in range(len(test_stock_price))]) * 100
-    return mean(abs((test_stock_price - stock_price_predict)/test_stock_price) ) * 100 
+    # return mean(abs((stock_actual_price - stock_price_predict)/stock_actual_price)) * 100 
+  
+    ape = np.abs((stock_actual_price[i] - stock_price_predict[i])/stock_actual_price[i] for i in range(len(stock_actual_price)))
+    return np.mean(ape) * 100 
 
-def get_rmse(test_stock_price, stock_price_predict):
+def get_rmse(n, stock_actual_price, stock_price_predict):
     # 7. RMSE ← sqrt [mean{(test_stock_price – stock_price_predict)2}] 
+    
+    #n = total number of training days
+    # i = day of the stock
+    #p = is the predicted stock price
+    #y = actual stock price
 
-    return np.sqrt(mean((test_stock_price - stock_price_predict)**2))
+    #might have to remove sum() and  use mean()
+    # return np.sqrt(mean((stock_actual_price[i] - stock_price_predict[i])**2 for i in range(len(stock_price_predict)))/n)
+    return np.sqrt(mean((stock_actual_price - stock_price_predict)**2))
  
 # trading_days = 3686
 # start_date = datetime.date(1999, 4, 4)
@@ -93,10 +103,12 @@ def lasso_model(ticker):
     
     #train model
     # TODO -think have to implement this my self, temporarily using skleran lasso model.
-    # no clue what the aplha level is.
-    clf = linear_model.Lasso(alpha=0.1)
+    # no clue what the aplha level is. maybe just leave it as default?
+    clf = linear_model.Lasso()
     clf.fit(x_train, y_train) # n_sample, n_features (not sure what lambda is or how to use it)
     clf.predict(x_test) 
+    
+    
     
     pass
 
