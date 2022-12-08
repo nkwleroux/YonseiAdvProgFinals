@@ -71,10 +71,11 @@ def get_mape(stock_actual_price, stock_price_predict):
     # mape = mean([abs((test_stock_price[i] - stock_price_predict[i])/test_stock_price[i]) for i in range(len(test_stock_price))]) * 100
     # return mean(abs((stock_actual_price - stock_price_predict)/stock_actual_price)) * 100 
   
-    ape = np.abs((stock_actual_price[i] - stock_price_predict[i])/stock_actual_price[i] for i in range(len(stock_actual_price)))
+    # ape = np.abs((stock_actual_price[i] - stock_price_predict[i])/stock_actual_price[i] for i in range(len(stock_actual_price)))
+    ape = np.abs((stock_actual_price - stock_price_predict)/stock_actual_price)
     return np.mean(ape) * 100 
 
-def get_rmse(n, stock_actual_price, stock_price_predict):
+def get_rmse(stock_actual_price, stock_price_predict):
     # 7. RMSE ← sqrt [mean{(test_stock_price – stock_price_predict)2}] 
     
     #n = total number of training days
