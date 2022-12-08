@@ -27,7 +27,6 @@ def get_tickers():
 
     for i in range(len(tickers)):
         tickers[i] = list(tickers[i].split(" "))
-        print(tickers[i])
         
     temp_tickers = []
     for i in range(len(tickers)):
@@ -40,12 +39,15 @@ def get_tickers():
         
         tickers[i] = temp_ticker   
         temp_tickers.append(tickers[i])    
+        
+    # debug
+    print(tickers)
          
     return tickers
 
-def read_file(filename):
+def read_file(filename, folder="yFinance"):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    return pd.read_csv(dir_path + '\\' + "csv-files" + '\\' + filename)
+    return pd.read_csv(dir_path + '\\' + "csv-files" + '\\' + folder + '\\' + filename)
 
 def get_training_and_testing_data(x, y, test_size):
     # 2. (train_features,train_stock_price)← training_function() 
@@ -105,9 +107,10 @@ def lasso_model(ticker):
     #train model
     # TODO -think have to implement this my self, temporarily using skleran lasso model.
     # no clue what the aplha level is. maybe just leave it as default?
-    clf = linear_model.Lasso()
-    clf.fit(x_train, y_train) # n_sample, n_features (not sure what lambda is or how to use it)
-    clf.predict(x_test) 
+    
+    # clf = linear_model.Lasso()
+    # clf.fit(x_train, y_train) # n_sample, n_features (not sure what lambda is or how to use it)
+    # clf.predict(x_test) 
     
     
     
@@ -169,10 +172,6 @@ def main():
     ## not necessary
     
     tickers = get_tickers()
-    
-    for list in tickers:
-        print(list)
-        # read_file('data.csv')
     
     lasso_model(tickers[0])
     

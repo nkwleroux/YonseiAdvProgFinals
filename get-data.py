@@ -8,7 +8,7 @@ import os
 
 # LASSO REGRESSION() MODEL (GS.csv)
 # trading_days = 3686
-# start_date = datetime.date(1999, 4, 4)
+# start_date = datetime.date(1999, 5, 4)
 # end_date = datetime.date(2014, 1, 3)
 # training_percent = 0.7
 # test_percent = 0.3
@@ -30,21 +30,25 @@ def stringDate_to_date(date_str):
         
     return datetime.date(date_list[0], date_list[1], date_list[2])   
 
-def string_to_list(string):
-    listRes = list(string.split(" "))
-    return listRes
-
-def ticker_to_csv(list, df_names):
+def ticker_to_csv(data, df_names):
     
-    start_date = stringDate_to_date(list[0])  
-    end_date = stringDate_to_date(list[1])
-    company_ticker = list[2].strip()
+    start_date = stringDate_to_date(data[0])  
+    end_date = stringDate_to_date(data[1])
+    company_ticker = data[2].strip()
     
     try:
-        
-        ticker = yf.Ticker(company_ticker)
-        
-        df = ticker.history(start="{}".format(start_date), end="{}".format(end_date), interval='1d', auto_adjust=True)
+        df = yf.download(
+        tickers = company_ticker,
+        start="{}".format(start_date), 
+        end="{}".format(end_date),
+        interval = "1d",
+        ignore_tz = True,
+        group_by = 'ticker',
+        auto_adjust = True,
+        prepost = True,
+        threads = True,
+        proxy = None
+        )
         
         temp_ticker = company_ticker
         counter = 0
@@ -53,15 +57,18 @@ def ticker_to_csv(list, df_names):
             counter+=1
             temp_ticker = company_ticker + "-" + str(counter)
         
+        df["Ticker"] = company_ticker
         company_ticker = temp_ticker
         df_names.append(company_ticker)
-        df["Ticker"] = company_ticker
         
         dir_path = os.path.dirname(os.path.realpath(__file__))
         if(os.path.exists(dir_path + "\csv-files") == False):
             os.mkdir(dir_path + "\csv-files")
+            
+        if(os.path.exists(dir_path + "\csv-files\yFinance") == False):
+            os.mkdir(dir_path + "\csv-files\yFinance")
                     
-        df.to_csv(dir_path + "\csv-files\{}.csv".format(company_ticker))
+        df.to_csv(dir_path + "\csv-files\yFinance\{}.csv".format(company_ticker))
     except Exception:
         (df, "could not get")
 
@@ -74,16 +81,12 @@ def get_data():
             tickers.append(line),
 
     for i in range(len(tickers)):
-        tickers[i] = string_to_list(tickers[i])
-
-    ## redundant code
-    # for i in range(len(tickers)):
-    #     tickers[i] = tickers[i][:3]
+        tickers[i] = list(tickers[i].split(" "))
         
     df_names = []
 
-    for list in tickers:
-        ticker_to_csv(list, df_names)    
+    for data in tickers:
+        ticker_to_csv(data, df_names)    
             
 if __name__ == "__main__":
     get_data()
