@@ -6,13 +6,14 @@ LICENSE: MIT
 
 DEPENDENCIES:
 
-<!-- pip install yfinance, pandas, matplotlib, datetime, scikit-learn, numpy -->
+pip install yfinance, pandas, matplotlib, datetime, scikit-learn, numpy
 
 HOW TO RUN:
 
 CSV-files are already saved in the repo, so you do not have to run get-data.py if you do not wish to make modifications.
 
-(Deprecated - issues with yfinance, not accurate with data on yahoo finance)
+(Deprecated - issues with yfinance, not accurate with data on Yahoo Finance)
+(Data is now taken directly from Yahoo Finance)
 Run "python3 get-data.py" in the terminal to output the results.
 
 FINALS PROJECT FALL 2022 - ADVANCED PROGRAMMING (under supervision of Prof. Biswajit Sarkar)
