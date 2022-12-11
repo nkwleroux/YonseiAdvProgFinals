@@ -27,7 +27,6 @@ def get_tickers():
 
     for i in range(len(tickers)):
         tickers[i] = list(tickers[i].split(" "))
-        print(tickers[i])
         
     temp_tickers = []
     for i in range(len(tickers)):
@@ -40,12 +39,15 @@ def get_tickers():
         
         tickers[i] = temp_ticker   
         temp_tickers.append(tickers[i])    
+        
+    # debug
+    print(tickers)
          
     return tickers
 
-def read_file(filename):
+def read_file(filename, folder="yFinance"):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    return pd.read_csv(dir_path + '\\' + "csv-files" + '\\' + filename)
+    return pd.read_csv(dir_path + '\\' + "csv-files" + '\\' + folder + '\\' + filename)
 
 def get_training_and_testing_data(x, y, test_size):
     # 2. (train_features,train_stock_price)← training_function() 
@@ -64,17 +66,28 @@ def get_stock_price_predict(model):
     # 5. stock_price_predict← LASSO_predict(train_features) 
     return model.predict()
     
-def get_mape(test_stock_price, stock_price_predict):
+def get_mape(stock_actual_price, stock_price_predict):
     # 6. MAPE ← mean [abs{(test_stock_price – stock_price_predict)/test_stock_price}] * 100 
 
     # not entirely sure if this is correct
     # mape = mean([abs((test_stock_price[i] - stock_price_predict[i])/test_stock_price[i]) for i in range(len(test_stock_price))]) * 100
-    return mean(abs((test_stock_price - stock_price_predict)/test_stock_price) ) * 100 
+    # return mean(abs((stock_actual_price - stock_price_predict)/stock_actual_price)) * 100 
+  
+    # ape = np.abs((stock_actual_price[i] - stock_price_predict[i])/stock_actual_price[i] for i in range(len(stock_actual_price)))
+    ape = np.abs((stock_actual_price - stock_price_predict)/stock_actual_price)
+    return np.mean(ape) * 100 
 
-def get_rmse(test_stock_price, stock_price_predict):
+def get_rmse(stock_actual_price, stock_price_predict):
     # 7. RMSE ← sqrt [mean{(test_stock_price – stock_price_predict)2}] 
+    
+    #n = total number of training days
+    # i = day of the stock
+    #p = is the predicted stock price
+    #y = actual stock price
 
-    return np.sqrt(mean((test_stock_price - stock_price_predict)**2))
+    #might have to remove sum() and  use mean()
+    # return np.sqrt(mean((stock_actual_price[i] - stock_price_predict[i])**2 for i in range(len(stock_price_predict)))/n)
+    return np.sqrt(mean((stock_actual_price - stock_price_predict)**2))
  
 # trading_days = 3686
 # start_date = datetime.date(1999, 4, 4)
@@ -93,10 +106,13 @@ def lasso_model(ticker):
     
     #train model
     # TODO -think have to implement this my self, temporarily using skleran lasso model.
-    # no clue what the aplha level is.
-    clf = linear_model.Lasso(alpha=0.1)
-    clf.fit(x_train, y_train) # n_sample, n_features (not sure what lambda is or how to use it)
-    clf.predict(x_test) 
+    # no clue what the aplha level is. maybe just leave it as default?
+    
+    # clf = linear_model.Lasso()
+    # clf.fit(x_train, y_train) # n_sample, n_features (not sure what lambda is or how to use it)
+    # clf.predict(x_test) 
+    
+    
     
     pass
 
@@ -121,10 +137,24 @@ def ridge_model(ticker):
 def trying_to_understand_formulas():
     # Consider the set of training vectors (x, ), x belongs to Rn, belongs to R,
     #1 i = 1...N
+    ### number of features?
     
     # The hypothesis or the linear regression output is given by the following:
-    #2 h (x) = d sigma notation (j = 0) wj xj = w^T x
+    #2 h (x) = d sigma notation (j = 0) wj xj = w^T * x
                                                 #transpose of w
+    n = 0 #TODO
+    w = [] #TODO - weight vector
+    x_train = [] #TODO
+    y_train = [] #TODO
+
+    #if x^0 = 1
+    x_train[0] = 1 # I think?   
+
+    #eq2 = h(x)
+    eq2 = (w[j] * x_train[j] for j in range(len(x_train))) # = w^T * x	
+    
+    #eq3 = j(w)
+    eq3 = (1/n) * (eq2[i] - y_train[i] for i in range(len(eq2)))**2 #this is very wrong
                                                 
     # The cost function or the squared error function is defined as follows:
     #3 E (w) = 1/N * (N sigma notation (i = 0)) * (h(xi) - yi)2 = 1/N  ||Xw - y||^2 
@@ -142,10 +172,6 @@ def main():
     ## not necessary
     
     tickers = get_tickers()
-    
-    for list in tickers:
-        print(list)
-        # read_file('data.csv')
     
     lasso_model(tickers[0])
     
